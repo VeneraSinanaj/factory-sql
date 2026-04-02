@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Sweet Factory — Simulation</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #0f0f1a;
+  color: #eee;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Header ── */
+.header {
+  background: #1a1a2e;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid #2a2a4a;
+  flex-shrink: 0;
+}
+.header h1 { font-size: 18px; color: #a0a0ff; }
+.header p  { font-size: 13px; color: #666; margin-left: auto; }
+
+/* ── Étapes ── */
+.steps-bar {
+  display: flex;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #12122a;
+  border-bottom: 1px solid #2a2a4a;
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+
+.step {
+  flex-shrink: 0;
+  background: #1e1e3a;
+  border: 2px solid #2a2a5a;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.step:hover  { border-color: #6c63ff; color: #ccc; }
+.step.active { border-color: #6c63ff; background: #2a2060; color: #a0a0ff; }
+.step.done   { border-color: #27ae60; background: #0d2a1a; color: #27ae60; }
+
+.step-arrow { color: #333; font-size: 18px; align-self: center; flex-shrink: 0; }
+
+/* ── Main ── */
+.main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── Canvas tables ── */
+.canvas {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+svg.arrows {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.table-box {
+  position: absolute;
+  background: #1a1a2e;
+  border: 2px solid #2a2a4a;
+  border-radius: 10px;
+  width: 175px;
+  transition: all 0.4s;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.table-box .tbl-header {
+  background: #2a2a4a;
+  padding: 7px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.table-box .tbl-rows {
+  padding: 6px 8px;
+  font-size: 10px;
+  font-family: monospace;
+  color: #555;
+  line-height: 1.7;
+  min-height: 36px;
+}
+
+.table-box .tbl-rows .r { color: #777; }
+.table-box .tbl-rows .r.hi { color: #ccc; }
+
+/* États */
+.table-box.flash-insert {
+  border-color: #27ae60;
+  box-shadow: 0 0 20px rgba(39,174,96,0.4);
+}
+.table-box.flash-insert .tbl-header { background: #0d3a20; color: #27ae60; }
+
+.table-box.flash-update {
+  border-color: #f39c12;
+  box-shadow: 0 0 20px rgba(243,156,18,0.4);
+}
+.table-box.flash-update .tbl-header { background: #3a2800; color: #f39c12; }
+
+.table-box.flash-linked {
+  border-color: #6c63ff;
+  box-shadow: 0 0 14px rgba(108,99,255,0.3);
+}
+.table-box.flash-linked .tbl-header { background: #1a1060; color: #a0a0ff; }
+
+.table-box.flash-read {
+  border-color: #3498db;
+  box-shadow: 0 0 14px rgba(52,152,219,0.3);
+}
+.table-box.flash-read .tbl-header { background: #0a2040; color: #3498db; }
+
+/* Badge */
+.badge {
+  margin-left: auto;
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 20px;
+  font-weight: 700;
+}
+.badge.ins { background: #27ae60; color: white; }
+.badge.upd { background: #f39c12; color: white; }
+.badge.lnk { background: #6c63ff; color: white; }
+.badge.rd  { background: #3498db; color: white; }
+
+/* ── Panneau latéral ── */
+.side {
+  width: 300px;
+  background: #12122a;
+  border-left: 1px solid #2a2a4a;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.side-info {
+  padding: 16px;
+  border-bottom: 1px solid #2a2a4a;
+  flex-shrink: 0;
+}
+.side-info h2 { font-size: 14px; color: #a0a0ff; margin-bottom: 8px; }
+.side-info p  { font-size: 12px; color: #888; line-height: 1.6; }
+
+.side-sql {
+  flex: 1;
+  padding: 12px 16px;
+  overflow-y: auto;
+}
+.side-sql h3 { font-size: 11px; text-transform: uppercase; color: #555; margin-bottom: 8px; letter-spacing: 1px; }
+
+.sql-block {
+  background: #0d0d1a;
+  border-radius: 8px;
+  padding: 12px;
+  font-family: 'Consolas', monospace;
+  font-size: 11px;
+  color: #cdd6f4;
+  line-height: 1.8;
+  white-space: pre;
+  overflow-x: auto;
+  margin-bottom: 10px;
+  border: 1px solid #2a2a4a;
+}
+.sql-block .kw  { color: #89b4fa; font-weight: bold; }
+.sql-block .tbl { color: #a6e3a1; }
+.sql-block .val { color: #fab387; }
+.sql-block .cmt { color: #45475a; font-style: italic; }
+
+.side-btns {
+  padding: 12px 16px;
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid #2a2a4a;
+  flex-shrink: 0;
+}
+
+.btn-next {
+  flex: 1;
+  background: #6c63ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-next:hover    { background: #5a52d5; }
+.btn-next:disabled { background: #2a2a4a; color: #555; cursor: default; }
+
+.btn-reset {
+  background: #1e1e3a;
+  color: #888;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-reset:hover { border-color: #e74c3c; color: #e74c3c; }
+
+/* Légende */
+.legend {
+  display: flex;
+  gap: 10px;
+  padding: 8px 16px;
+  flex-shrink: 0;
+  border-top: 1px solid #2a2a4a;
+  flex-wrap: wrap;
+}
+.leg { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #666; }
+.leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span style="font-size:22px">🍬</span>
+  <h1>Sweet Factory — Simulation d'une commande</h1>
+  <p id="step-counter">Étape 0 / 6</p>
+</div>
+
+<div class="steps-bar" id="steps-bar"></div>
+
+<div class="main">
+  <!-- Canvas -->
+  <div class="canvas" id="canvas">
+    <svg class="arrows" id="svg"></svg>
+  </div>
+
+  <!-- Panneau latéral -->
+  <div class="side">
+    <div class="side-info">
+      <h2 id="info-title">Prêt à démarrer</h2>
+      <p id="info-desc">Cliquez sur <strong style="color:#a0a0ff">Suivant</strong> pour commencer la simulation d'une commande de A à Z.</p>
+    </div>
+    <div class="side-sql" id="side-sql">
+      <h3>SQL</h3>
+      <div class="sql-block" style="color:#333">-- Le SQL s'affichera ici</div>
+    </div>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:#27ae60"></div>INSERT</div>
+      <div class="leg"><div class="leg-dot" style="background:#f39c12"></div>UPDATE</div>
+      <div class="leg"><div class="leg-dot" style="background:#6c63ff"></div>Liée</div>
+      <div class="leg"><div class="leg-dot" style="background:#3498db"></div>Consultée</div>
+    </div>
+    <div class="side-btns">
+      <button class="btn-reset" onclick="reset()">↺</button>
+      <button class="btn-next" id="btn-next" onclick="next()">Démarrer →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Positions des tables ──────────────────────────────────────
+const TABLES = {
+  particulier:    { x: 20,  y: 30,  icon: '👤', cols: ['id', 'nom', 'prenom', 'email', 'ville'] },
+  entreprise:     { x: 20,  y: 230, icon: '🏢', cols: ['id', 'nom', 'email', 'numero_siret'] },
+  commande:       { x: 240, y: 130, icon: '📦', cols: ['id', 'particulier_id', 'statut', 'mode_livraison', 'date_commande'] },
+  ligne_commande: { x: 460, y: 130, icon: '📋', cols: ['id', 'commande_id', 'produit_id', 'quantite', 'prix_unitaire'] },
+  produit:        { x: 640, y: 20,  icon: '🍫', cols: ['id', 'nom', 'categorie', 'prix_unitaire', 'actif'] },
+  stock_produit:  { x: 860, y: 20,  icon: '📦', cols: ['id', 'produit_id', 'quantite_disponible', 'quantite_minimum'] },
+  recette:        { x: 640, y: 240, icon: '📝', cols: ['id', 'produit_id', 'ingredient_id', 'quantite'] },
+  ingredient:     { x: 420, y: 380, icon: '🧂', cols: ['id', 'nom', 'unite', 'prix_unitaire', 'allergene'] },
+  stock:          { x: 200, y: 380, icon: '📊', cols: ['id', 'ingredient_id', 'quantite_disponible', 'quantite_minimum'] },
+};
+
+// Données simulées par étape
+const STEPS = [
+  {
+    label: "1. Inscription",
+    title: "Étape 1 — Lucas s'inscrit",
+    desc: "Lucas Martin crée son compte. Une nouvelle ligne est insérée dans <strong>particulier</strong>. Son id=26 est attribué automatiquement.",
+    sqls: [`<span class="kw">INSERT INTO</span> <span class="tbl">particulier</span>
+  (nom, prenom, email, telephone, adresse, ville, date_naissance)
+<span class="kw">VALUES</span>
+  (<span class="val">'Martin'</span>, <span class="val">'Lucas'</span>,
+   <span class="val">'lucas.martin@gmail.com'</span>,
+   <span class="val">'+33 6 12 34 56 78'</span>,
+   <span class="val">'14 rue de la Paix'</span>,
+   <span class="val">'Paris'</span>, <span class="val">'1995-03-15'</span>);`],
+    states: {
+      particulier:    { type: 'flash-insert', badge: 'ins', rows: ['→ id=26 | Lucas Martin', '   Paris | inscrit aujourd\'hui'] },
+    }
+  },
+  {
+    label: "2. Commande",
+    title: "Étape 2 — Il passe une commande",
+    desc: "Lucas commande en ligne. La table <strong>commande</strong> reçoit une nouvelle ligne avec son particulier_id=26. Le statut est <em>'en attente'</em> par défaut.",
+    sqls: [`<span class="kw">INSERT INTO</span> <span class="tbl">commande</span>
+  (particulier_id, adresse_livraison, mode_livraison)
+<span class="kw">VALUES</span>
+  (<span class="val">26</span>,
+   <span class="val">'14 rue de la Paix, Paris'</span>,
+   <span class="val">'Colissimo'</span>);
+
+<span class="cmt">-- id=355, statut='en attente' (défaut)</span>`],
+    states: {
+      particulier: { type: 'flash-linked', badge: 'lnk', rows: ['id=26 | Lucas Martin ✓'] },
+      commande:    { type: 'flash-insert', badge: 'ins', rows: ['→ id=355 | en attente', '   particulier_id=26', '   Colissimo'] },
+    }
+  },
+  {
+    label: "3. Produits",
+    title: "Étape 3 — Il choisit ses produits",
+    desc: "Lucas ajoute 2 produits. Chaque produit crée une ligne dans <strong>ligne_commande</strong>. Le prix est copié depuis <strong>produit</strong> au moment de la commande (il ne changera pas si le prix évolue).",
+    sqls: [`<span class="kw">INSERT INTO</span> <span class="tbl">ligne_commande</span>
+  (commande_id, produit_id, quantite, prix_unitaire)
+<span class="kw">VALUES</span>
+  (last_insert_rowid(), <span class="val">3</span>, <span class="val">3</span>, <span class="val">4.50</span>);
+
+<span class="kw">INSERT INTO</span> <span class="tbl">ligne_commande</span>
+  (commande_id, produit_id, quantite, prix_unitaire)
+<span class="kw">VALUES</span>
+  (last_insert_rowid(), <span class="val">7</span>, <span class="val">2</span>, <span class="val">2.90</span>);`],
+    states: {
+      particulier:    { type: 'flash-linked', badge: 'lnk', rows: ['id=26 | Lucas Martin ✓'] },
+      commande:       { type: 'flash-linked', badge: 'lnk', rows: ['id=355 | en attente ✓'] },
+      produit:        { type: 'flash-read',   badge: 'rd',  rows: ['id=3 | Tablette Noir 70% | 4.50€', 'id=7 | Fraises Tagada  | 2.90€'] },
+      stock_produit:  { type: 'flash-update', badge: 'upd', rows: ['↓ produit=3 : 120 → 117', '↓ produit=7 : 250 → 248', '   Stock décrémenté ✓'] },
+      ligne_commande: { type: 'flash-insert', badge: 'ins', rows: ['→ id=1097 | produit=3 | qté=3', '→ id=1098 | produit=7 | qté=2', '   Total : 19.30€'] },
+    }
+  },
+  {
+    label: "4. Préparation",
+    title: "Étape 4 — La commande est préparée",
+    desc: "Sweet Factory traite la commande. Le statut passe à <em>'en cours'</em>. On consulte <strong>recette</strong> pour savoir quels ingrédients utiliser, et on décrémente <strong>stock</strong>.",
+    sqls: [`<span class="kw">UPDATE</span> <span class="tbl">commande</span>
+<span class="kw">SET</span> statut = <span class="val">'en cours'</span>
+<span class="kw">WHERE</span> id = <span class="val">355</span>
+  <span class="kw">AND</span> statut = <span class="val">'en attente'</span>;
+
+<span class="cmt">-- On consulte les recettes pour connaître
+-- les ingrédients nécessaires</span>
+
+<span class="kw">UPDATE</span> <span class="tbl">stock</span>
+<span class="kw">SET</span> quantite_disponible = quantite_disponible - <span class="val">X</span>,
+    date_mise_a_jour = <span class="val">DATE('now')</span>
+<span class="kw">WHERE</span> ingredient_id <span class="kw">IN</span> (
+  <span class="kw">SELECT</span> ingredient_id <span class="kw">FROM</span> <span class="tbl">recette</span>
+  <span class="kw">WHERE</span> produit_id <span class="kw">IN</span> (<span class="val">3</span>, <span class="val">7</span>)
+);`],
+    states: {
+      commande:       { type: 'flash-update', badge: 'upd', rows: ['id=355 | en cours ←', '   était: en attente'] },
+      ligne_commande: { type: 'flash-linked', badge: 'lnk', rows: ['id=1097 | produit=3 ✓', 'id=1098 | produit=7 ✓'] },
+      produit:        { type: 'flash-linked', badge: 'lnk', rows: ['id=3 | Tablette Noir 70% ✓', 'id=7 | Fraises Tagada ✓'] },
+      stock_produit:  { type: 'flash-linked', badge: 'lnk', rows: ['produit=3 | stock=117 ✓', 'produit=7 | stock=248 ✓'] },
+      recette:        { type: 'flash-read',   badge: 'rd',  rows: ['produit=3 → cacao, sucre...', 'produit=7 → sirop, gélatine...'] },
+      ingredient:     { type: 'flash-linked', badge: 'lnk', rows: ['cacao, sucre, sirop...'] },
+      stock:          { type: 'flash-update', badge: 'upd', rows: ['↓ cacao: 180 → 165 kg', '↓ sucre: 1200 → 1190 kg', '↓ sirop: 90 → 78 L'] },
+    }
+  },
+  {
+    label: "5. Livraison",
+    title: "Étape 5 — La commande est livrée",
+    desc: "Le colis arrive chez Lucas. Le statut passe à <em>'livré'</em> et la date de livraison est enregistrée.",
+    sqls: [`<span class="kw">UPDATE</span> <span class="tbl">commande</span>
+<span class="kw">SET</span> statut = <span class="val">'livré'</span>,
+    date_livraison = <span class="val">DATE('now')</span>
+<span class="kw">WHERE</span> id = <span class="val">355</span>;`],
+    states: {
+      particulier:    { type: 'flash-linked', badge: 'lnk', rows: ['id=26 | Lucas Martin ✓'] },
+      commande:       { type: 'flash-update', badge: 'upd', rows: ['id=355 | livré ←', '   date_livraison: aujourd\'hui'] },
+      ligne_commande: { type: 'flash-linked', badge: 'lnk', rows: ['id=1097 ✓', 'id=1098 ✓'] },
+    }
+  },
+  {
+    label: "6. Annulation ?",
+    title: "Étape 6 — Tentative d'annulation",
+    desc: "Lucas essaie d'annuler… mais c'est trop tard. La commande est déjà <em>'livré'</em>. Le <code>AND statut = 'en attente'</code> protège la base : <strong>0 ligne modifiée</strong>.",
+    sqls: [`<span class="kw">UPDATE</span> <span class="tbl">commande</span>
+<span class="kw">SET</span> statut = <span class="val">'annulé'</span>
+<span class="kw">WHERE</span> id = <span class="val">355</span>
+  <span class="kw">AND</span> statut = <span class="val">'en attente'</span>;
+
+<span class="cmt">-- Résultat : 0 ligne modifiée ✗
+-- statut reste 'livré' — protégé ✓</span>`],
+    states: {
+      commande: { type: 'flash-update', badge: 'upd', rows: ['id=355 | livré (inchangé)', '   ❌ 0 ligne modifiée', '   Annulation impossible'] },
+    }
+  },
+];
+
+let current = -1;
+
+// ── Créer les tables ──────────────────────────────────────────
+function createTables() {
+  const canvas = document.getElementById('canvas');
+  for (const [name, cfg] of Object.entries(TABLES)) {
+    const box = document.createElement('div');
+    box.className = 'table-box';
+    box.id = 'tbl-' + name;
+    box.style.left = cfg.x + 'px';
+    box.style.top  = cfg.y + 'px';
+
+    const colsHTML = cfg.cols.map(c => `<div class="r" id="row-${name}-${c}">${c}</div>`).join('');
+    box.innerHTML = `
+      <div class="tbl-header">${cfg.icon} ${name} <span class="badge" id="badge-${name}" style="display:none"></span></div>
+      <div class="tbl-rows" id="rows-${name}">${colsHTML}</div>`;
+    canvas.appendChild(box);
+  }
+}
+
+// ── Créer les flèches SVG ─────────────────────────────────────
+const ARROWS = [
+  ['particulier',   'commande'],
+  ['entreprise',    'commande'],
+  ['commande',      'ligne_commande'],
+  ['produit',       'ligne_commande'],
+  ['produit',       'recette'],
+  ['produit',       'stock_produit'],
+  ['ingredient',    'recette'],
+  ['ingredient',    'stock'],
+];
+
+function getCenter(name) {
+  const cfg = TABLES[name];
+  return { x: cfg.x + 87, y: cfg.y + 60 };
+}
+
+function createArrows() {
+  const svg = document.getElementById('svg');
+  svg.innerHTML = '<defs><marker id="ah" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2a2a5a"/></marker></defs>';
+  for (const [from, to] of ARROWS) {
+    const a = getCenter(from);
+    const b = getCenter(to);
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', a.x); line.setAttribute('y1', a.y);
+    line.setAttribute('x2', b.x); line.setAttribute('y2', b.y);
+    line.setAttribute('stroke', '#2a2a5a');
+    line.setAttribute('stroke-width', '1.5');
+    line.setAttribute('marker-end', 'url(#ah)');
+    line.id = `arrow-${from}-${to}`;
+    svg.appendChild(line);
+  }
+}
+
+// ── Créer les boutons d'étapes ────────────────────────────────
+function createStepBtns() {
+  const bar = document.getElementById('steps-bar');
+  STEPS.forEach((s, i) => {
+    if (i > 0) {
+      const arr = document.createElement('span');
+      arr.className = 'step-arrow';
+      arr.textContent = '›';
+      bar.appendChild(arr);
+    }
+    const btn = document.createElement('div');
+    btn.className = 'step';
+    btn.id = 'step-btn-' + i;
+    btn.textContent = s.label;
+    btn.onclick = () => goTo(i);
+    bar.appendChild(btn);
+  });
+}
+
+// ── Reset visuel ──────────────────────────────────────────────
+function resetVisual() {
+  for (const name of Object.keys(TABLES)) {
+    const box = document.getElementById('tbl-' + name);
+    box.className = 'table-box';
+    const badge = document.getElementById('badge-' + name);
+    badge.style.display = 'none';
+    const rowsEl = document.getElementById('rows-' + name);
+    rowsEl.innerHTML = TABLES[name].cols.map(c => `<div class="r">${c}</div>`).join('');
+  }
+}
+
+// ── Appliquer un état ─────────────────────────────────────────
+function applyStep(stepIdx) {
+  resetVisual();
+  if (stepIdx < 0) return;
+
+  const step = STEPS[stepIdx];
+  for (const [name, state] of Object.entries(step.states)) {
+    const box = document.getElementById('tbl-' + name);
+    box.className = 'table-box ' + state.type;
+
+    const badge = document.getElementById('badge-' + name);
+    const badgeClass = { 'flash-insert': 'ins', 'flash-update': 'upd', 'flash-linked': 'lnk', 'flash-read': 'rd' };
+    badge.className = 'badge ' + (badgeClass[state.type] || '');
+    badge.textContent = state.badge === 'ins' ? 'INSERT' : state.badge === 'upd' ? 'UPDATE' : state.badge === 'lnk' ? 'LIÉE' : 'LU';
+    badge.style.display = 'inline-block';
+
+    const rowsEl = document.getElementById('rows-' + name);
+    rowsEl.innerHTML = state.rows.map(r => `<div class="r hi">${r}</div>`).join('');
+  }
+}
+
+// ── Render ────────────────────────────────────────────────────
+function render() {
+  // Étapes
+  STEPS.forEach((s, i) => {
+    const btn = document.getElementById('step-btn-' + i);
+    btn.className = 'step' + (i === current ? ' active' : i < current ? ' done' : '');
+  });
+
+  document.getElementById('step-counter').textContent = `Étape ${Math.max(current + 1, 0)} / ${STEPS.length}`;
+
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.disabled = current >= STEPS.length - 1;
+  nextBtn.textContent = current < 0 ? 'Démarrer →' : current >= STEPS.length - 1 ? '✓ Terminé' : 'Suivant →';
+
+  if (current < 0) {
+    document.getElementById('info-title').textContent = 'Prêt à démarrer';
+    document.getElementById('info-desc').innerHTML = 'Cliquez sur <strong style="color:#a0a0ff">Démarrer</strong> pour simuler une commande de A à Z.';
+    document.getElementById('side-sql').innerHTML = '<h3>SQL</h3><div class="sql-block" style="color:#333">-- Le SQL s\'affichera ici</div>';
+    return;
+  }
+
+  const s = STEPS[current];
+  document.getElementById('info-title').textContent = s.title;
+  document.getElementById('info-desc').innerHTML = s.desc;
+  document.getElementById('side-sql').innerHTML = '<h3>SQL exécuté</h3>' + s.sqls.map(q => `<div class="sql-block">${q}</div>`).join('');
+
+  applyStep(current);
+}
+
+function goTo(i) { current = i; render(); }
+function next()  { if (current < STEPS.length - 1) { current++; render(); } }
+function reset() { current = -1; render(); resetVisual(); }
+
+createTables();
+createArrows();
+createStepBtns();
+render();
+</script>
+</body>
+</html>

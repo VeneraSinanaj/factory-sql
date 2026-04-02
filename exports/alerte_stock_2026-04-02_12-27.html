@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>⚠️ Alerte Stock — Sweet Factory</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f6f9;
+            color: #2d2d2d;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        /* En-tête */
+        .header {
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            color: white;
+            border-radius: 12px;
+            padding: 28px 32px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .header .icon { font-size: 48px; }
+        .header h1 { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
+        .header p  { font-size: 14px; opacity: 0.85; }
+
+        /* Résumé */
+        .summary {
+            background: #fff3cd;
+            border-left: 5px solid #f0a500;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            font-size: 15px;
+        }
+        .summary strong { color: #c0392b; font-size: 17px; }
+
+        /* Tableau */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #2c3e50;
+            color: white;
+        }
+
+        thead th {
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.15s;
+        }
+        tbody tr:hover { background: #fafafa; }
+        tbody tr:last-child { border-bottom: none; }
+
+        td {
+            padding: 14px 16px;
+            font-size: 14px;
+        }
+
+        .num { text-align: right; font-variant-numeric: tabular-nums; }
+        .commande { color: #c0392b; font-weight: 700; font-size: 15px; }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge.rouge  { background: #fde8e8; color: #c0392b; }
+        .badge.orange { background: #fde8d8; color: #d35400; }
+        .badge.jaune  { background: #fef9e7; color: #b7950b; }
+
+        /* Pied de page */
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+        }
+        .ok-box {
+            background: #eafaf1;
+            border-left: 5px solid #27ae60;
+            border-radius: 8px;
+            padding: 14px 20px;
+            font-size: 14px;
+            color: #1e8449;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="header">
+        <div class="icon">⚠️</div>
+        <div>
+            <h1>Alerte Stock — Sweet Factory</h1>
+            <p>Rapport généré le 02/04/2026 à 12:27</p>
+        </div>
+    </div>
+
+    <div class="summary">
+        <strong>5 alertes au total</strong> —
+        3 ingrédients et
+        2 produits finis
+        en dessous du seuil minimum.
+    </div>
+
+    
+    <h2 style="margin:28px 0 12px;font-size:16px;color:#2c3e50">
+        🧂 Matières premières en alerte (3)
+    </h2>
+    <div class="card">
+        <table>
+            <thead><tr>
+                <th>Ingrédient</th><th>Fournisseur</th>
+                <th style="text-align:right">Stock actuel</th>
+                <th style="text-align:right">Stock minimum</th>
+                <th style="text-align:right">Qté à commander</th>
+                <th>Statut</th>
+            </tr></thead>
+            <tbody>
+        <tr>
+            <td><strong>Crème liquide entière</strong></td>
+            <td>Lactalis</td>
+            <td class="num">25.0</td>
+            <td class="num">50.0</td>
+            <td class="num commande">25.0</td>
+            <td><span class="badge jaune">Bas</span></td>
+        </tr>
+        <tr>
+            <td><strong>Lait entier</strong></td>
+            <td>Lactalis</td>
+            <td class="num">90.0</td>
+            <td class="num">100.0</td>
+            <td class="num commande">10.0</td>
+            <td><span class="badge jaune">Bas</span></td>
+        </tr>
+        <tr>
+            <td><strong>Levure chimique</strong></td>
+            <td>Lesaffre</td>
+            <td class="num">18.0</td>
+            <td class="num">20.0</td>
+            <td class="num commande">2.0</td>
+            <td><span class="badge jaune">Bas</span></td>
+        </tr></tbody>
+        </table>
+    </div>
+    
+    <h2 style="margin:28px 0 12px;font-size:16px;color:#2c3e50">
+        🍫 Produits finis en alerte (2)
+    </h2>
+    <div class="card">
+        <table>
+            <thead><tr>
+                <th>Produit</th><th>Catégorie</th>
+                <th style="text-align:right">Stock actuel</th>
+                <th style="text-align:right">Stock minimum</th>
+                <th style="text-align:right">Unités à produire</th>
+                <th>Statut</th>
+            </tr></thead>
+            <tbody>
+        <tr>
+            <td><strong>Réglisse Torsadée</strong></td>
+            <td>Bonbons</td>
+            <td class="num">10</td>
+            <td class="num">25</td>
+            <td class="num commande">15</td>
+            <td><span class="badge orange">Critique</span></td>
+        </tr>
+        <tr>
+            <td><strong>Pralinés Maison</strong></td>
+            <td>Chocolats</td>
+            <td class="num">8</td>
+            <td class="num">20</td>
+            <td class="num commande">12</td>
+            <td><span class="badge orange">Critique</span></td>
+        </tr></tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        Sweet Factory — Système de gestion des stocks · 02/04/2026 à 12:27
+    </div>
+
+</div>
+</body>
+</html>

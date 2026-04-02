@@ -1,0 +1,6 @@
+# Toutes les librairies utilisées (sqlite3, csv, os, datetime, webbrowser)
+# font partie de la bibliothèque standard Python — aucune installation requise.
+#
+# Pour exécuter les scripts :
+#   python report.py
+#   python alert_stock.py

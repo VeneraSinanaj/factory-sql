@@ -1,0 +1,44 @@
+type,article,unite,stock_actuel,stock_minimum,statut
+Ingrédient,Acide citrique,kg,55.0,20.0,OK
+Ingrédient,Amidon de maïs,kg,320.0,80.0,OK
+Ingrédient,Beurre doux,kg,320.0,100.0,OK
+Ingrédient,Beurre salé,kg,210.0,80.0,OK
+Ingrédient,Cacao en poudre,kg,180.0,150.0,OK
+Ingrédient,Chocolat au lait,kg,160.0,60.0,OK
+Ingrédient,Chocolat blanc,kg,120.0,40.0,OK
+Ingrédient,Chocolat noir 70%,kg,200.0,80.0,OK
+Ingrédient,Colorants naturels,kg,40.0,20.0,OK
+Ingrédient,Extrait de framboise,kg,12.0,8.0,OK
+Ingrédient,Farine de blé,kg,850.0,200.0,OK
+Ingrédient,Glucose liquide,kg,180.0,50.0,OK
+Ingrédient,Gélatine,kg,55.0,30.0,OK
+Ingrédient,Huile de coco,kg,60.0,25.0,OK
+Ingrédient,Noisettes entières,kg,230.0,80.0,OK
+Ingrédient,Poudre d'amande,kg,140.0,50.0,OK
+Ingrédient,Praliné noisette,kg,90.0,30.0,OK
+Ingrédient,Sel de Guérande,kg,95.0,30.0,OK
+Ingrédient,Sucre blanc,kg,1200.0,300.0,OK
+Ingrédient,Sucre glace,kg,450.0,100.0,OK
+Ingrédient,Vanille en poudre,kg,15.0,10.0,OK
+Ingrédient,Œufs frais,kg,310.0,100.0,OK
+Produit fini,Boîte Assortiment Prestige,unités,45,10,OK
+Produit fini,Caramels Beurre Salé,unités,130,20,OK
+Produit fini,Cookies Pépites Choco,unités,75,20,OK
+Produit fini,Financiers Amande,unités,50,15,OK
+Produit fini,Fraises Tagada Maison,unités,250,30,OK
+Produit fini,Guimauves Framboise,unités,140,25,OK
+Produit fini,Langues de Chat,unités,95,20,OK
+Produit fini,Madeleines Nature,unités,110,20,OK
+Produit fini,Mix Bonbons Vrac,unités,180,30,OK
+Produit fini,Ourson Guimauve,unités,200,30,OK
+Produit fini,Palmiers Caramélisés,unités,85,20,OK
+Produit fini,Sablés Bretons,unités,90,20,OK
+Produit fini,Tablette Blanc Vanille,unités,80,20,OK
+Produit fini,Tablette Lait Noisette,unités,95,20,OK
+Produit fini,Tablette Noir 70%,unités,120,20,OK
+Produit fini,Truffes Cacao,unités,60,15,OK
+Ingrédient,Crème liquide entière,L,25.0,50.0,ALERTE
+Ingrédient,Lait entier,L,90.0,100.0,ALERTE
+Ingrédient,Levure chimique,kg,18.0,20.0,ALERTE
+Produit fini,Pralinés Maison,unités,8,20,ALERTE
+Produit fini,Réglisse Torsadée,unités,10,25,ALERTE

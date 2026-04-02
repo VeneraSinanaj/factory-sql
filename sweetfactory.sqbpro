@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="sweetfactory.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="0"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="4649"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="0" parent="0"/><expanded_item id="2" parent="0"/><expanded_item id="6" parent="0"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="recette" custom_title="0" dock_id="1" table="4,7:mainrecette"/><dock_state state="000000ff00000000fd00000001000000020000038600000288fc0100000001fb000000160064006f0063006b00420072006f00770073006500310100000000000003860000012300ffffff0000026c0000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="commande" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="35"/><column index="2" value="85"/><column index="3" value="86"/><column index="4" value="87"/><column index="5" value="295"/><column index="6" value="167"/><column index="7" value="88"/><column index="8" value="104"/><column index="9" value="89"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="commande_detail" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="88"/><column index="2" value="104"/><column index="3" value="87"/><column index="4" value="231"/><column index="5" value="95"/><column index="6" value="215"/><column index="7" value="56"/><column index="8" value="81"/><column index="9" value="72"/><column index="10" value="91"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="ingredient" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="35"/><column index="2" value="151"/><column index="3" value="37"/><column index="4" value="81"/><column index="5" value="175"/><column index="6" value="119"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="recette" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="35"/><column index="2" value="68"/><column index="3" value="85"/><column index="4" value="56"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1*">-- ============================================================
+-- seed_ingredients.sql — Sweet Factory
+-- Nouveaux ingrédients, stocks associés et recettes complétées
+-- ============================================================
+
+PRAGMA foreign_keys = ON;
+
+-- ============================================================
+-- NOUVEAUX INGRÉDIENTS (id 15 → 25)
+-- ============================================================
+
+-- Chocolat blanc en pistoles (pour enrobage et ganaches)
+INSERT INTO ingredient (id, nom, unite, prix_unitaire, fournisseur, allergene)
+VALUES (15, 'Chocolat blanc', 'kg', 11.50, 'Barry Callebaut', 'Lactose');
+
+-- Chocolat noir en pistoles 70% (base des tablettes)
+INSERT INTO ingredient (id, nom, unite, prix_unitaire, fournisseur, allergene)
+VALUES (16, 'Chocolat noir 70%', 'kg', 13.20, 'Valrhona', 'Aucun');
+
+-- Chocolat au lait en pistoles
+INSERT INTO ingredient (id, nom, unite, prix_unitaire, fournisseur, allergene)
+VALUES (17, 'Chocolat au lait', 'kg', 10.80, 'Valrhona', 'Lactose');
+
+-- Crème liquide entière (ganaches, truffes)
+INSERT INTO ingredient (id, nom, unite, prix_unitaire, fournisseur, allergene)
+VALUES (18, 'Crème liquide entière', 'L', 2.40, 'Lactalis', 'Lactose');
+
+-- Praliné noisette (pour pralinés maison et tablettes)
+INSERT INTO ingredient (id, nom, unite, prix_unitaire, fournisseur, allergene)
+VALUES (19, 'Praliné noisette', 'kg', 16.50, 'Olam Nuts', 'Fruits à coque');
+
+-- Sucre glace (glaçages, biscuits)
+INSERT INTO ingredient (id, nom, unite, prix_unitaire, fournisseur, allergene)
+VALUES (20, 'Sucre glace', 'kg', 0.95, 'Cristal Union', 'Aucun');
+
+-- Levure chimique (biscuits et gâteaux)
+INSERT INTO ingredient (id, nom, unite, prix_unitaire, fournisseur, allergene)
+VALUES (21, 'Levure chimique', 'kg', 3.80, 'Lesaffre', 'Gluten');
+
+-- Extrait de framboise naturel (bonbons guimauve)
+INSERT INTO ingredient (id, nom, unite, prix_unitaire, fournisseur, allergene)
+VALUES (22, 'Extrait de framboise', 'kg', 42.00, 'Épices du Monde', 'Aucun');
+
+-- Acide citrique (bonbons acidulés)
+INSERT INTO ingredient (id, nom, unite, prix_unitaire, fournisseur, allergene)
+VALUES (23, 'Acide citrique', 'kg', 5.20, 'Jungbunzlauer', 'Aucun');
+
+-- Amidon de maïs (texture bonbons et biscuits)
+INSERT INTO ingredient (id, nom, unite, prix_unitaire, fournisseur, allergene)
+VALUES (24, 'Amidon de maïs', 'kg', 1.60, 'Roquette', 'Aucun');
+
+-- Huile de coco (enrobage, texture)
+INSERT INTO ingredient (id, nom, unite, prix_unitaire, fournisseur, allergene)
+VALUES (25, 'Huile de coco', 'kg', 6.90, 'Jardin Bio', 'Aucun');
+
+-- ============================================================
+-- STOCKS DES NOUVEAUX INGRÉDIENTS
+-- ============================================================
+
+INSERT INTO stock (ingredient_id, quantite_disponible, quantite_minimum, quantite_maximum, date_mise_a_jour)
+VALUES (15, 120.0,  40.0,  500.0, DATE('now'));
+
+INSERT INTO stock (ingredient_id, quantite_disponible, quantite_minimum, quantite_maximum, date_mise_a_jour)
+VALUES (16, 200.0,  80.0,  800.0, DATE('now'));
+
+INSERT INTO stock (ingredient_id, quantite_disponible, quantite_minimum, quantite_maximum, date_mise_a_jour)
+VALUES (17, 160.0,  60.0,  600.0, DATE('now'));
+
+-- Crème en alerte volontaire pour enrichir stock_alerte
+INSERT INTO stock (ingredient_id, quantite_disponible, quantite_minimum, quantite_maximum, date_mise_a_jour)
+VALUES (18,  25.0,  50.0,  300.0, DATE('now'));
+
+INSERT INTO stock (ingredient_id, quantite_disponible, quantite_minimum, quantite_maximum, date_mise_a_jour)
+VALUES (19,  90.0,  30.0,  300.0, DATE('now'));
+
+INSERT INTO stock (ingredient_id, quantite_disponible, quantite_minimum, quantite_maximum, date_mise_a_jour)
+VALUES (20, 450.0, 100.0, 1500.0, DATE('now'));
+
+INSERT INTO stock (ingredient_id, quantite_disponible, quantite_minimum, quantite_maximum, date_mise_a_jour)
+VALUES (21,  18.0,  20.0,  150.0, DATE('now'));  -- en alerte
+
+INSERT INTO stock (ingredient_id, quantite_disponible, quantite_minimum, quantite_maximum, date_mise_a_jour)
+VALUES (22,  12.0,   8.0,   80.0, DATE('now'));
+
+INSERT INTO stock (ingredient_id, quantite_disponible, quantite_minimum, quantite_maximum, date_mise_a_jour)
+VALUES (23,  55.0,  20.0,  200.0, DATE('now'));
+
+INSERT INTO stock (ingredient_id, quantite_disponible, quantite_minimum, quantite_maximum, date_mise_a_jour)
+VALUES (24, 320.0,  80.0,  800.0, DATE('now'));
+
+INSERT INTO stock (ingredient_id, quantite_disponible, quantite_minimum, quantite_maximum, date_mise_a_jour)
+VALUES (25,  60.0,  25.0,  250.0, DATE('now'));
+
+-- ============================================================
+-- RECETTES COMPLÉTÉES AVEC LES NOUVEAUX INGRÉDIENTS
+-- Produits qui n'avaient pas de recette ou une recette incomplète
+-- ============================================================
+
+-- Produit 1 : Tablette Noir 70% — ajout chocolat noir 70%
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (1, 16, 85.0);
+
+-- Produit 2 : Tablette Lait Noisette — ajout chocolat au lait + praliné
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (2, 17, 60.0);
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (2, 19, 20.0);
+
+-- Produit 3 : Tablette Blanc Vanille — ajout chocolat blanc
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (3, 15, 80.0);
+
+-- Produit 4 : Boîte Assortiment Prestige — ajout crème + chocolat noir
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (4, 16, 50.0);
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (4, 18, 30.0);
+
+-- Produit 5 : Truffes Cacao — ajout crème + chocolat noir
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (5, 16, 60.0);
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (5, 18, 40.0);
+
+-- Produit 6 : Ourson Guimauve — ajout amidon + acide citrique
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (6, 24, 15.0);
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (6, 23,  5.0);
+
+-- Produit 7 : Fraises Tagada Maison — ajout acide citrique + colorants (existant) + amidon
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (7, 23,  8.0);
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (7, 24, 12.0);
+
+-- Produit 8 : Réglisse Torsadée — nouvelle recette complète
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (8,  2, 60.0);  -- sucre
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (8, 24, 30.0);  -- amidon
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (8, 13,  5.0);  -- colorants
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (8, 23,  3.0);  -- acide citrique
+
+-- Produit 9 : Caramels Beurre Salé — ajout crème
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (9, 18, 35.0);
+
+-- Produit 10 : Mix Bonbons Vrac — ajout acide citrique + amidon + extrait framboise
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (10, 23, 10.0);
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (10, 24, 20.0);
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (10, 22,  5.0);
+
+-- Produit 13 : Financiers Amande — recette complète
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (13,  1, 30.0);  -- farine
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (13,  2, 80.0);  -- sucre
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (13,  8, 60.0);  -- poudre amande
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (13,  4, 50.0);  -- beurre
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (13, 10, 40.0);  -- œufs
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (13, 20, 20.0);  -- sucre glace
+
+-- Produit 14 : Madeleines Nature — ajout levure chimique
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (14,  1, 80.0);  -- farine
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (14,  2, 60.0);  -- sucre
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (14,  4, 40.0);  -- beurre
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (14, 10, 30.0);  -- œufs
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (14, 21,  5.0);  -- levure
+
+-- Produit 15 : Palmiers Caramélisés — recette complète
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (15,  1, 100.0); -- farine
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (15,  2,  80.0); -- sucre
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (15,  4,  60.0); -- beurre
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (15, 11,   2.0); -- sel
+
+-- Produit 16 : Pralinés Maison — ajout praliné noisette + chocolat noir + crème
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (16, 19, 50.0);  -- praliné
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (16, 16, 40.0);  -- chocolat noir
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (16, 18, 20.0);  -- crème
+
+-- Produit 17 : Guimauves Framboise — ajout extrait framboise + amidon
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (17, 22, 10.0);  -- extrait framboise
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (17, 24, 15.0);  -- amidon
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (17, 23,  3.0);  -- acide citrique
+
+-- Produit 18 : Langues de Chat — recette complète
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (18,  1, 50.0);  -- farine
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (18,  2, 40.0);  -- sucre
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (18,  4, 35.0);  -- beurre
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (18, 10, 25.0);  -- œufs
+INSERT INTO recette (produit_id, ingredient_id, quantite) VALUES (18,  7,  1.0);  -- vanille</sql><current_tab id="0"/></tab_sql></sqlb_project>
