@@ -26,20 +26,18 @@ Toutes les données ont été générées avec Claude (Anthropic) — elles sont
 ## Structure du projet
 
 ```
-sweetfactory/
-├── schema.sql          # Création des tables, index et vues
-├── seed.sql            # Données de test (INSERT)
-├── queries.sql         # Requêtes de manipulation quotidienne
-├── analysis.sql        # Requêtes d'analyse et statistiques
-├── DESIGN.md           # Conception, diagramme ER et choix techniques
-├── design.png          # Diagramme entité-relation
-├── simulation.html     # Simulation interactive d'une commande
-├── dashboard.pbix      # Tableau de bord Power BI
-├── dashboard.pdf       # Export PDF du tableau de bord
-├── report.py           # Script Python : export CSV (CA, ventes, stocks)
-├── alert_stock.py      # Script Python : rapport HTML d'alerte stock (ingrédients + produits finis)
-├── requirements.txt    # Dépendances Python
-└── exports/            # Fichiers générés par les scripts Python
+factory-sql/
+├── dashboard/              # Tableau de bord Power BI + simulation
+├── diagram/                # Diagramme entité-relation
+├── python + exports/       # Scripts Python et fichiers générés
+├── sql/                    # Fichiers SQL organisés
+├── README.md
+├── analysis.sql            # Requêtes d'analyse et statistiques
+├── queries.sql             # Requêtes de manipulation quotidienne
+├── requirements.txt        # Dépendances Python
+├── schema.sql              # Création des tables, index et vues
+├── seed.sql                # Données de test (INSERT)
+└── simulation.html         # Simulation interactive d'une commande
 ```
 
 ---
